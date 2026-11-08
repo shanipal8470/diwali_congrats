@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Diwali - Festive Greeting & Card Creator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rozha+One&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tone.js for Festive Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cinzel: ['"Cinzel Decorative"', 'cursive'],
+                        rozha: ['"Rozha One"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        diwali: {
+                            dark: '#0f051d',
+                            maroon: '#3b0722',
+                            gold: '#ffd700',
+                            amber: '#ff9900',
+                            crimson: '#9e1b32'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at 50% 20%, #3b0722 0%, #190524 50%, #090211 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Festive Gold Text Shimmer */
+        .gold-gradient-text {
+            background: linear-gradient(to right, #fff2a3, #ffd700, #ff9900, #ffd700, #fff2a3);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shine 4s linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        /* Ornate Card Border & Glow */
+        .festive-card {
+            background: linear-gradient(145deg, rgba(46, 8, 34, 0.88) 0%, rgba(18, 4, 28, 0.94) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.45);
+            box-shadow: 0 0 35px rgba(255, 165, 0, 0.25), inset 0 0 25px rgba(255, 215, 0, 0.12);
+            backdrop-filter: blur(12px);
+            position: relative;
+        }
+
+        .festive-card::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border: 1px dashed rgba(255, 215, 0, 0.35);
+            border-radius: 1.25rem;
+            pointer-events: none;
+        }
+
+        /* Diya Flame Animation */
+        .diya-flame {
+            transform-origin: bottom center;
+            animation: flicker 2.2s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 12px #ff9900) drop-shadow(0 0 22px #ffd700);
+            transition: all 0.4s ease;
+        }
+
+        .diya-unlit .diya-flame {
+            opacity: 0;
+            transform: scale(0);
+            filter: none;
+        }
+
+        @keyframes flicker {
+            0% { transform: scaleY(1) scaleX(1) rotate(-2deg); }
+            25% { transform: scaleY(1.08) scaleX(0.95) rotate(2deg); }
+            50% { transform: scaleY(0.95) scaleX(1.04) rotate(-1deg); }
+            75% { transform: scaleY(1.06) scaleX(0.97) rotate(3deg); }
+            100% { transform: scaleY(1.02) scaleX(1.02) rotate(-2deg); }
+        }
+
+        /* Rotating Background Mandala */
+        .mandala-spin {
+            animation: spinSlow 50s linear infinite;
+        }
+
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Hanging Toran Sway */
+        .toran-sway {
+            transform-origin: top center;
+            animation: sway 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes sway {
+            0% { transform: rotate(-1.5deg); }
+            100% { transform: rotate(1.5deg); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f051d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b38600;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ffd700;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-amber-500 selection:text-black">
+
+    <!-- Background Fireworks & Sparkles Canvas -->
+    <canvas id="fireworksCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Decorative Rotating Mandala in Center Background -->
+    <div class="fixed inset-0 flex items-center justify-center pointer-events-none z-0 opacity-10 overflow-hidden">
+        <svg class="w-[650px] h-[650px] md:w-[850px] md:h-[850px] mandala-spin text-amber-400" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="95" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4"/>
+            <circle cx="100" cy="100" r="80" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="100" cy="100" r="60" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2"/>
+            <circle cx="100" cy="100" r="40" stroke="currentColor" stroke-width="2"/>
+            <!-- Mandala Petals -->
+            <g stroke="currentColor" stroke-width="1.2">
+                <path d="M100 5 C115 40 115 60 100 100 C85 60 85 40 100 5 Z"/>
+                <path d="M100 195 C115 160 115 140 100 100 C85 140 85 160 100 195 Z"/>
+                <path d="M5 100 C40 115 60 115 100 100 C60 85 40 85 5 100 Z"/>
+                <path d="M195 100 C160 115 140 115 100 100 C140 85 160 85 195 100 Z"/>
+                <path d="M32 32 C68 50 78 65 100 100 C65 78 50 68 32 32 Z"/>
+                <path d="M168 168 C132 150 122 135 100 100 C135 122 150 132 168 168 Z"/>
+                <path d="M168 32 C150 68 135 78 100 100 C122 65 132 50 168 32 Z"/>
+                <path d="M32 168 C50 132 65 122 100 100 C78 135 68 150 32 168 Z"/>
+            </g>
+        </svg>
+    </div>
+
+    <!-- Top Festive Hanging Lanterns / Toran -->
+    <div class="relative z-10 w-full overflow-hidden pointer-events-none">
+        <div class="max-w-6xl mx-auto flex justify-between px-4 sm:px-12">
+            <!-- Left Hanging Lantern -->
+            <div class="toran-sway flex flex-col items-center">
+                <div class="w-0.5 h-10 sm:h-16 bg-gradient-to-b from-amber-300 to-amber-500"></div>
+                <div class="w-8 h-10 sm:w-10 sm:h-12 rounded-lg bg-gradient-to-b from-amber-500 via-red-600 to-amber-600 border border-yellow-300 shadow-[0_0_20px_rgba(255,165,0,0.8)] flex items-center justify-center">
+                    <div class="w-3 h-5 rounded-full bg-yellow-200 animate-pulse"></div>
+                </div>
+                <div class="w-4 h-3 border-x-2 border-amber-400"></div>
+            </div>
+
+            <!-- Center Banner Badge -->
+            <div class="mt-3 bg-amber-500/10 border border-amber-400/30 backdrop-blur-md px-4 py-1 rounded-full text-xs sm:text-sm text-amber-200 flex items-center gap-2 shadow-lg">
+                <i class="fa-solid fa-sparkles text-amber-400"></i>
+                <span>Festival of Lights</span>
+                <i class="fa-solid fa-sparkles text-amber-400"></i>
+            </div>
+
+            <!-- Right Hanging Lantern -->
+            <div class="toran-sway flex flex-col items-center" style="animation-delay: -1.5s;">
+                <div class="w-0.5 h-12 sm:h-20 bg-gradient-to-b from-amber-300 to-amber-500"></div>
+                <div class="w-8 h-10 sm:w-10 sm:h-12 rounded-lg bg-gradient-to-b from-amber-500 via-pink-600 to-amber-600 border border-yellow-300 shadow-[0_0_20px_rgba(255,165,0,0.8)] flex items-center justify-center">
+                    <div class="w-3 h-5 rounded-full bg-yellow-200 animate-pulse"></div>
+                </div>
+                <div class="w-4 h-3 border-x-2 border-amber-400"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-2 pb-16">
+        
+        <!-- Shared Greeting Notification Banner (Shown automatically when opened via custom URL) -->
+        <div id="sharedModeBanner" class="hidden mb-6 max-w-2xl mx-auto bg-gradient-to-r from-amber-500/20 via-yellow-500/25 to-amber-500/20 border border-amber-400/50 rounded-2xl p-3.5 text-center backdrop-blur-md shadow-lg animate-fade-in">
+            <p class="text-amber-200 text-sm sm:text-base font-medium flex flex-wrap items-center justify-center gap-2">
+                <span>🎉 You received a special personalized Diwali greeting!</span>
+                <button onclick="scrollToCreator()" class="underline text-yellow-300 hover:text-white font-semibold ml-1 transition">
+                    Create &amp; Share Your Own →
+                </button>
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT / TOP COLUMN: Interactive Greeting Card Preview (7 cols on large screens) -->
+            <div class="lg:col-span-7 flex flex-col items-center">
+                
+                <div id="greetingCard" class="festive-card w-full rounded-3xl p-6 sm:p-10 text-center transition-all duration-500 relative overflow-hidden">
+                    
+                    <!-- Corner Decorative Accents -->
+                    <div class="absolute top-3 left-3 w-8 h-8 border-t-2 border-l-2 border-amber-400 rounded-tl-lg opacity-80"></div>
+                    <div class="absolute top-3 right-3 w-8 h-8 border-t-2 border-r-2 border-amber-400 rounded-tr-lg opacity-80"></div>
+                    <div class="absolute bottom-3 left-3 w-8 h-8 border-b-2 border-l-2 border-amber-400 rounded-bl-lg opacity-80"></div>
+                    <div class="absolute bottom-3 right-3 w-8 h-8 border-b-2 border-r-2 border-amber-400 rounded-br-lg opacity-80"></div>
+
+                    <!-- Shubh Deepavali Sanskrit / Hindi Sub-header -->
+                    <div class="inline-block px-4 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs sm:text-sm tracking-widest uppercase font-semibold mb-3">
+                        ✨ Shubh Deepavali ✨
+                    </div>
+
+                    <!-- Recipient Greeting Badge -->
+                    <div id="recipientWrapper" class="mb-2">
+                        <span class="text-amber-200/80 text-base sm:text-lg">Dearest </span>
+                        <span id="cardRecipient" class="font-rozha text-2xl sm:text-3xl text-yellow-300 tracking-wide border-b border-amber-400/40 pb-0.5">
+                            Friend &amp; Family
+                        </span>,
+                    </div>
+
+                    <!-- Main Happy Diwali Headline -->
+                    <h1 class="font-cinzel text-4xl sm:text-6xl font-black gold-gradient-text tracking-wider my-3 drop-shadow-[0_4px_15px_rgba(255,215,0,0.3)]">
+                        HAPPY DIWALI
+                    </h1>
+
+                    <!-- Interactive Diyas Trio Row -->
+                    <div class="flex items-center justify-center gap-6 sm:gap-12 my-6 select-none">
+                        <!-- Left Diya -->
+                        <div class="diya-item cursor-pointer group flex flex-col items-center" onclick="toggleSingleDiya(this)" title="Click to toggle Diya!">
+                            <svg class="w-16 h-20 sm:w-20 sm:h-24 overflow-visible" viewBox="0 0 100 120">
+                                <!-- Flame -->
+                                <g class="diya-flame">
+                                    <path d="M50 10 C35 35 32 55 50 65 C68 55 65 35 50 10 Z" fill="url(#flameGrad)" />
+                                    <path d="M50 28 C43 42 42 54 50 62 C58 54 57 42 50 28 Z" fill="#fff9c4" />
+                                </g>
+                                <!-- Diya Bowl -->
+                                <path d="M12 65 Q50 78 88 65 Q80 105 50 105 Q20 105 12 65 Z" fill="url(#bowlGrad)" stroke="#ffd700" stroke-width="2"/>
+                                <path d="M20 75 Q50 86 80 75" stroke="#ffeb3b" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+                                <ellipse cx="50" cy="65" rx="38" ry="6" fill="#4a0e17" stroke="#ffd700" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+
+                        <!-- Center Grand Diya -->
+                        <div class="diya-item cursor-pointer group flex flex-col items-center -mt-3" onclick="toggleSingleDiya(this)" title="Click to toggle Diya!">
+                            <svg class="w-24 h-28 sm:w-28 sm:h-32 overflow-visible" viewBox="0 0 100 120">
+                                <defs>
+                                    <linearGradient id="flameGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#ffff00" />
+                                        <stop offset="60%" stop-color="#ff9900" />
+                                        <stop offset="100%" stop-color="#ff3300" />
+                                    </linearGradient>
+                                    <linearGradient id="bowlGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#d97706" />
+                                        <stop offset="50%" stop-color="#991b1b" />
+                                        <stop offset="100%" stop-color="#450a0a" />
+                                    </linearGradient>
+                                </defs>
+                                <!-- Flame -->
+                                <g class="diya-flame">
+                                    <path d="M50 5 C32 32 30 55 50 65 C70 55 68 32 50 5 Z" fill="url(#flameGrad)" />
+                                    <path d="M50 25 C42 40 40 53 50 62 C60 53 58 40 50 25 Z" fill="#ffffff" />
+                                </g>
+                                <!-- Diya Base -->
+                                <path d="M8 65 Q50 82 92 65 Q82 110 50 110 Q18 110 8 65 Z" fill="url(#bowlGrad)" stroke="#ffd700" stroke-width="2.5"/>
+                                <!-- Decorative Dots -->
+                                <circle cx="32" cy="86" r="2.5" fill="#ffd700"/>
+                                <circle cx="50" cy="90" r="3" fill="#ffd700"/>
+                                <circle cx="68" cy="86" r="2.5" fill="#ffd700"/>
+                                <ellipse cx="50" cy="65" rx="42" ry="7" fill="#3b0722" stroke="#ffd700" stroke-width="2"/>
+                            </svg>
+                        </div>
+
+                        <!-- Right Diya -->
+                        <div class="diya-item cursor-pointer group flex flex-col items-center" onclick="toggleSingleDiya(this)" title="Click to toggle Diya!">
+                            <svg class="w-16 h-20 sm:w-20 sm:h-24 overflow-visible" viewBox="0 0 100 120">
+                                <!-- Flame -->
+                                <g class="diya-flame">
+                                    <path d="M50 10 C35 35 32 55 50 65 C68 55 65 35 50 10 Z" fill="url(#flameGrad)" />
+                                    <path d="M50 28 C43 42 42 54 50 62 C58 54 57 42 50 28 Z" fill="#fff9c4" />
+                                </g>
+                                <!-- Diya Bowl -->
+                                <path d="M12 65 Q50 78 88 65 Q80 105 50 105 Q20 105 12 65 Z" fill="url(#bowlGrad)" stroke="#ffd700" stroke-width="2"/>
+                                <path d="M20 75 Q50 86 80 75" stroke="#ffeb3b" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+                                <ellipse cx="50" cy="65" rx="38" ry="6" fill="#4a0e17" stroke="#ffd700" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Personalized Note Box -->
+                    <div class="relative bg-black/30 border border-amber-400/30 rounded-2xl p-5 sm:p-6 my-4 max-w-xl mx-auto shadow-inner">
+                        <i class="fa-solid fa-quote-left text-amber-400/40 text-2xl absolute top-3 left-4"></i>
+                        <p id="cardNote" class="text-amber-50/95 text-base sm:text-lg leading-relaxed font-medium italic px-4 whitespace-pre-line">
+                            May the divine light of Diwali spread peace, prosperity, happiness, and good health in your life. Wishing you and your family a sparkling festival of lights!
+                        </p>
+                        <i class="fa-solid fa-quote-right text-amber-400/40 text-2xl absolute bottom-3 right-4"></i>
+                    </div>
+
+                    <!-- Sender Signature -->
+                    <div class="mt-6 flex flex-col items-center justify-center">
+                        <span class="text-xs uppercase tracking-widest text-amber-300/75">With Warmest Wishes From</span>
+                        <div id="cardSender" class="font-rozha text-2xl sm:text-4xl text-amber-400 mt-1 drop-shadow-[0_2px_10px_rgba(255,215,0,0.4)]">
+                            Your Loving Friend
+                        </div>
+                    </div>
+
+                    <!-- Interactive Festive Action Buttons Inside Card -->
+                    <div class="mt-8 pt-6 border-t border-amber-500/20 flex flex-wrap items-center justify-center gap-3">
+                        <button onclick="celebrateGrandFireworks()" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-bold text-sm shadow-[0_0_20px_rgba(255,215,0,0.5)] hover:shadow-[0_0_30px_rgba(255,215,0,0.9)] hover:scale-105 active:scale-95 transition flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Launch Grand Fireworks!</span>
+                        </button>
+
+                        <button onclick="lightAllDiyas()" class="px-4 py-2.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 font-semibold text-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-fire-flame-curved text-amber-400"></i>
+                            <span id="diyaBtnText">Relight Diyas</span>
+                        </button>
+
+                        <button id="soundToggleBtn" onclick="toggleFestiveAudio()" class="px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 text-amber-200 text-sm transition flex items-center gap-2" title="Toggle Festive Chime">
+                            <i id="soundIcon" class="fa-solid fa-volume-high text-amber-400"></i>
+                            <span id="soundText" class="hidden sm:inline">Audio On</span>
+                        </button>
+                    </div>
+
+                    <!-- Sound Effect Preview Bar -->
+                    <div class="mt-4 pt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-amber-200/80">
+                        <span class="text-amber-300 font-medium mr-1"><i class="fa-solid fa-music mr-1"></i>Sound FX:</span>
+                        <button onclick="playTempleBellSound()" class="px-3 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/25 border border-amber-400/30 transition hover:scale-105 active:scale-95 flex items-center gap-1.5 text-yellow-200">
+                            <span>🔔 Temple Bell</span>
+                        </button>
+                        <button onclick="playFirecrackerSound()" class="px-3 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/25 border border-amber-400/30 transition hover:scale-105 active:scale-95 flex items-center gap-1.5 text-yellow-200">
+                            <span>🎆 Patakha Burst</span>
+                        </button>
+                        <button onclick="playTwinkleSparkleSound()" class="px-3 py-1 rounded-full bg-amber-500/10 hover:bg-amber-500/25 border border-amber-400/30 transition hover:scale-105 active:scale-95 flex items-center gap-1.5 text-yellow-200">
+                            <span>✨ Fairy Dust</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Share Bar directly below the card -->
+                <div class="w-full mt-5 bg-white/5 border border-amber-500/30 rounded-2xl p-4 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-center sm:text-left">
+                        <h3 class="text-amber-300 font-semibold text-sm sm:text-base flex items-center justify-center sm:justify-start gap-2">
+                            <i class="fa-solid fa-share-nodes"></i> Ready to Share with Friends!
+                        </h3>
+                        <p class="text-xs text-amber-100/70">Your friend will see this exact personalized card &amp; note.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-2.5 w-full sm:w-auto">
+                        <!-- WhatsApp Share -->
+                        <button onclick="shareOnWhatsApp()" class="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-slate-950 font-bold text-sm shadow-lg hover:scale-105 transition flex items-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>WhatsApp</span>
+                        </button>
+                        <!-- Copy Link -->
+                        <button onclick="copyCustomLink()" class="flex-1 sm:flex-initial justify-center px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm shadow-lg hover:scale-105 transition flex items-center gap-2">
+                            <i class="fa-solid fa-link"></i>
+                            <span>Copy Link</span>
+                        </button>
+                        <!-- Native Mobile Share -->
+                        <button onclick="nativeShareCard()" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-400/40 text-amber-200 font-semibold text-sm transition flex items-center gap-1.5" title="More Share Options">
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                            <span class=" sm:hidden">More</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT / BOTTOM COLUMN: Customize & Share Panel (5 cols on large screens) -->
+            <div id="creatorSection" class="lg:col-span-5">
+                <div class="festive-card rounded-3xl p-6 sm:p-8">
+                    <div class="flex items-center justify-between border-b border-amber-500/20 pb-4 mb-5">
+                        <div>
+                            <h2 class="font-cinzel text-xl sm:text-2xl font-bold text-amber-300 flex items-center gap-2">
+                                <i class="fa-solid fa-pen-fancy text-amber-400"></i>
+                                Personalize Card
+                            </h2>
+                            <p class="text-xs text-amber-100/70 mt-0.5">Customize your greeting &amp; share with everyone</p>
+                        </div>
+                        <button onclick="resetForm()" class="text-xs text-amber-300/70 hover:text-amber-300 underline">
+                            Reset
+                        </button>
+                    </div>
+
+                    <!-- Form Inputs -->
+                    <div class="space-y-4">
+                        <!-- Sender Name -->
+                        <div>
+                            <label for="inputSender" class="block text-xs font-semibold uppercase tracking-wider text-amber-200 mb-1.5">
+                                Your Name (Sender) <span class="text-amber-400">*</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-amber-400/70">
+                                    <i class="fa-solid fa-user"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    id="inputSender" 
+                                    placeholder="e.g., Rahul Sharma" 
+                                    maxlength="40"
+                                    class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-amber-500/40 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-white placeholder-amber-200/30 text-sm outline-none transition"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Recipient Name -->
+                        <div>
+                            <label for="inputRecipient" class="block text-xs font-semibold uppercase tracking-wider text-amber-200 mb-1.5">
+                                Friend's / Family's Name <span class="text-amber-200/50 font-normal">(Optional - leave blank for all friends)</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-amber-400/70">
+                                    <i class="fa-solid fa-users"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    id="inputRecipient" 
+                                    placeholder="e.g., Priya, Everyone, My Dear Friends" 
+                                    maxlength="45"
+                                    class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/40 border border-amber-500/40 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-white placeholder-amber-200/30 text-sm outline-none transition"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Quick Preset Wishes -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-amber-200 mb-2">
+                                Pick a Festive Wish Preset or Write Your Own
+                            </label>
+                            <div class="flex flex-wrap gap-1.5 mb-2.5">
+                                <button type="button" onclick="setPresetWish(0)" class="text-xs px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/30 text-amber-200 transition">
+                                    🪔 Traditional Blessing
+                                </button>
+                                <button type="button" onclick="setPresetWish(1)" class="text-xs px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/30 text-amber-200 transition">
+                                    ✨ For Best Friends
+                                </button>
+                                <button type="button" onclick="setPresetWish(2)" class="text-xs px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/30 text-amber-200 transition">
+                                    🏡 Warm Family Note
+                                </button>
+                                <button type="button" onclick="setPresetWish(3)" class="text-xs px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/30 text-amber-200 transition">
+                                    🍬 Short &amp; Sweet
+                                </button>
+                            </div>
+
+                            <!-- Custom Personal Note Textarea -->
+                            <textarea 
+                                id="inputNote" 
+                                rows="4" 
+                                maxlength="350"
+                                placeholder="Write your heartfelt Diwali note for your friends here..."
+                                class="w-full p-3.5 rounded-xl bg-black/40 border border-amber-500/40 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-white placeholder-amber-200/30 text-sm outline-none transition resize-none"
+                            ></textarea>
+                            <div class="flex justify-between text-[11px] text-amber-200/60 mt-1">
+                                <span>Updates live on the card</span>
+                                <span id="charCount">0 / 350</span>
+                            </div>
+                        </div>
+
+                        <!-- Generated Shareable Link Box -->
+                        <div class="pt-2">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-amber-300 mb-1.5">
+                                Your Custom Shareable Link
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <input 
+                                    type="text" 
+                                    id="shareUrlDisplay" 
+                                    readonly 
+                                    class="w-full px-3 py-2 rounded-lg bg-black/60 border border-amber-500/30 text-amber-200/80 text-xs font-mono select-all outline-none"
+                                >
+                                <button onclick="copyCustomLink()" class="px-3 py-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/40 border border-amber-400/50 text-amber-300 text-xs font-semibold whitespace-nowrap transition">
+                                    <i class="fa-regular fa-copy mr-1"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Primary Share Buttons -->
+                        <div class="pt-3 space-y-2.5">
+                            <button onclick="shareOnWhatsApp()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:brightness-110 text-white font-bold text-sm shadow-lg transition flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-xl"></i>
+                                <span>Share with Friends on WhatsApp</span>
+                            </button>
+
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <button onclick="copyCustomLink(true)" class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:brightness-110 text-slate-950 font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-copy"></i>
+                                    <span>Copy Note + Link</span>
+                                </button>
+                                <button onclick="nativeShareCard()" class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-400/40 text-amber-200 font-semibold text-xs sm:text-sm transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-share-from-square"></i>
+                                    <span>Share via App</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast Notification Popup -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 pointer-events-none transition-all duration-300 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-bold px-5 py-3 rounded-2xl shadow-[0_10px_30px_rgba(255,215,0,0.4)] flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span id="toastMessage">Link copied to clipboard!</span>
+    </div>
+
+    <script>
+        /* ==========================================
+         * 1. PRESET WISHES & STATE MANAGEMENT
+         * ========================================== */
+        const presetWishes = [
+            "May the divine light of Diwali spread peace, prosperity, happiness, and good health in your life. Wishing you and your family a sparkling festival of lights!",
+            "To my wonderful friend, may this Diwali bring endless moments of joy, laughter, and sweet memories into your life. Have a safe, bright, and blessed Diwali! 🪔✨",
+            "May Goddess Lakshmi and Lord Ganesha bless your home with abundance, harmony, and togetherness this festive season. Sending warm love and light to you and your family!",
+            "May a million lamps illuminate your life with endless joy, success, and positivity. Wishing you a very Happy and Prosperous Diwali! 🎆🍬"
+        ];
+
+        const inputSender = document.getElementById('inputSender');
+        const inputRecipient = document.getElementById('inputRecipient');
+        const inputNote = document.getElementById('inputNote');
+
+        const cardSender = document.getElementById('cardSender');
+        const cardRecipient = document.getElementById('cardRecipient');
+        const cardNote = document.getElementById('cardNote');
+        const charCount = document.getElementById('charCount');
+        const shareUrlDisplay = document.getElementById('shareUrlDisplay');
+        const sharedModeBanner = document.getElementById('sharedModeBanner');
+
+        let soundEnabled = true;
+
+        // Initialize from URL Parameters if present
+        function initGreetingFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const fromParam = params.get('from');
+            const toParam = params.get('to');
+            const noteParam = params.get('note');
+
+            if (fromParam || toParam || noteParam) {
+                sharedModeBanner.classList.remove('hidden');
+            }
+
+            inputSender.value = fromParam ? fromParam.trim() : '';
+            inputRecipient.value = toParam ? toParam.trim() : '';
+            inputNote.value = noteParam ? noteParam.trim() : presetWishes[0];
+
+            updateCardPreview();
+        }
+
+        // Update Live Greeting Card and Shareable URL
+        function updateCardPreview() {
+            const senderVal = inputSender.value.trim() || 'Your Loving Friend';
+            const recipientVal = inputRecipient.value.trim() || 'Friend & Family';
+            const noteVal = inputNote.value.trim() || presetWishes[0];
+
+            cardSender.textContent = senderVal;
+            cardRecipient.textContent = recipientVal;
+            cardNote.textContent = noteVal;
+            charCount.textContent = `${inputNote.value.length} / 350`;
+
+            // Construct Custom Shareable URL
+            const baseUrl = window.location.origin + window.location.pathname;
+            const queryParams = new URLSearchParams();
+            if (inputSender.value.trim()) queryParams.set('from', inputSender.value.trim());
+            if (inputRecipient.value.trim()) queryParams.set('to', inputRecipient.value.trim());
+            if (inputNote.value.trim()) queryParams.set('note', inputNote.value.trim());
+
+            const queryString = queryParams.toString();
+            const finalUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+            shareUrlDisplay.value = finalUrl;
+
+            // Gently update browser history URL without reloading so user can also copy from address bar
+            try {
+                window.history.replaceState({}, '', finalUrl);
+            } catch (e) {
+                // Ignore in restricted sandboxed environments
+            }
+        }
+
+        function setPresetWish(index) {
+            inputNote.value = presetWishes[index];
+            updateCardPreview();
+            playTwinkleSparkleSound();
+        }
+
+        function resetForm() {
+            inputSender.value = '';
+            inputRecipient.value = '';
+            inputNote.value = presetWishes[0];
+            sharedModeBanner.classList.add('hidden');
+            updateCardPreview();
+            playTempleBellSound();
+            showToast('Card reset to default!');
+        }
+
+        function scrollToCreator() {
+            document.getElementById('creatorSection').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => inputSender.focus(), 500);
+        }
+
+        // Attach Live Input Listeners
+        [inputSender, inputRecipient, inputNote].forEach(el => {
+            el.addEventListener('input', updateCardPreview);
+        });
+
+        /* ==========================================
+         * 2. SHARING FUNCTIONS (WHATSAPP, COPY, NATIVE)
+         * ========================================== */
+        function getShareMessageText() {
+            const sender = inputSender.value.trim() || 'Your Friend';
+            const recipient = inputRecipient.value.trim();
+            const note = inputNote.value.trim() || presetWishes[0];
+            const url = shareUrlDisplay.value;
+
+            const greetingHeader = recipient 
+                ? `🪔 *Happy Diwali, ${recipient}!* 🪔` 
+                : `🪔 *Wishing You All a Very Happy Diwali!* 🪔`;
+
+            return `${greetingHeader}\n\n"${note}"\n\n✨ *Warm Wishes From:* ${sender}\n\n👇 *Open your special interactive Diwali greeting card here:*\n${url}`;
+        }
+
+        function shareOnWhatsApp() {
+            const fullMessage = getShareMessageText();
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(fullMessage)}`;
+            window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+        }
+
+        function copyCustomLink(includeFullNote = false) {
+            const textToCopy = includeFullNote ? getShareMessageText() : shareUrlDisplay.value;
+
+            // Fallback-safe copy method for iframes and all browsers
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = textToCopy;
+            tempTextArea.style.position = 'fixed';
+            tempTextArea.style.left = '-9999px';
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+
+            try {
+                document.execCommand('copy');
+                showToast(includeFullNote ? 'Festive Note & Link copied!' : 'Custom Link copied to clipboard!');
+                playTwinkleSparkleSound();
+            } catch (err) {
+                showToast('Please copy the link from the box manually.');
+            } finally {
+                document.body.removeChild(tempTextArea);
+            }
+        }
+
+        async function nativeShareCard() {
+            const sender = inputSender.value.trim() || 'Your Friend';
+            const shareData = {
+                title: `Happy Diwali Greeting from ${sender}!`,
+                text: getShareMessageText(),
+                url: shareUrlDisplay.value
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    // User cancelled share sheet
+                }
+            } else {
+                copyCustomLink(true);
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        /* ==========================================
+         * 3. FESTIVE WEB AUDIO API SYNTHESIZER
+         * ========================================== */
+        let audioCtx = null;
+
+        // Initialize or resume the Web Audio Context reliably on user gestures
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // 1. Realistic Temple Brass Bell (Brass Ghanti Chime)
+        // Synthesizes rich metallic partials with distinct detuned harmonics and natural exponential decay
+        function playTempleBellSound(pitchMultiplier = 1.0) {
+            if (!soundEnabled) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+
+            const now = ctx.currentTime;
+            const masterGain = ctx.createGain();
+            masterGain.gain.setValueAtTime(0.4, now);
+            masterGain.connect(ctx.destination);
+
+            // Realistic acoustic bell harmonic ratios and subtle detune
+            const bellPartials = [
+                { ratio: 1.0, gain: 0.7, decay: 2.4 },      // Fundamental (e.g. 1180 Hz)
+                { ratio: 1.503, gain: 0.45, decay: 2.0 },    // Fifth partial
+                { ratio: 2.012, gain: 0.35, decay: 1.7 },    // Octave
+                { ratio: 2.76, gain: 0.25, decay: 1.2 },     // Metallic ringing upper partial
+                { ratio: 4.12, gain: 0.15, decay: 0.8 }      // High strike ping
+            ];
+
+            const baseFreq = 1180 * pitchMultiplier;
+
+            bellPartials.forEach(part => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(baseFreq * part.ratio, now);
+
+                // Quick strike transient followed by smooth shimmer decay
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(part.gain, now + 0.005);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + part.decay);
+
+                osc.connect(gain);
+                gain.connect(masterGain);
+
+                osc.start(now);
+                osc.stop(now + part.decay);
+            });
+        }
+
+        // 2. Realistic Diwali Firecracker Burst (Patakha Boom + Crackling Sparks)
+        // Combines a low-frequency punch dive with high-passed noise burst & crackles
+        function playFirecrackerSound() {
+            if (!soundEnabled) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+
+            const now = ctx.currentTime;
+
+            // --- Sub-Bass Boom Layer ---
+            const boomOsc = ctx.createOscillator();
+            const boomGain = ctx.createGain();
+            boomOsc.type = 'sine';
+            boomOsc.frequency.setValueAtTime(140, now);
+            boomOsc.frequency.exponentialRampToValueAtTime(32, now + 0.35);
+
+            boomGain.gain.setValueAtTime(0.65, now);
+            boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+            boomOsc.connect(boomGain);
+            boomGain.connect(ctx.destination);
+            boomOsc.start(now);
+            boomOsc.stop(now + 0.4);
+
+            // --- Realistic Crackling Noise Layer ---
+            const bufferDuration = 0.55;
+            const bufferSize = ctx.sampleRate * bufferDuration;
+            const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+
+            for (let i = 0; i < bufferSize; i++) {
+                // High density noise with occasional crackle spikes
+                const crackle = Math.random() > 0.94 ? (Math.random() * 2 - 1) * 1.5 : (Math.random() * 2 - 1) * 0.45;
+                output[i] = crackle;
+            }
+
+            const noiseSource = ctx.createBufferSource();
+            noiseSource.buffer = noiseBuffer;
+
+            // Bandpass filter to shape the blast & crackle
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(1800, now);
+            filter.frequency.exponentialRampToValueAtTime(600, now + bufferDuration);
+            filter.Q.value = 1.2;
+
+            const noiseGain = ctx.createGain();
+            noiseGain.gain.setValueAtTime(0, now);
+            noiseGain.gain.linearRampToValueAtTime(0.5, now + 0.008);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + bufferDuration);
+
+            noiseSource.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(ctx.destination);
+
+            noiseSource.start(now);
+        }
+
+        // 3. Fairy Dust / Wind Chime Twinkle for screen taps & sparkles
+        // Plays a high-frequency crystalline arpeggio in the festive Indian pentatonic scale
+        function playTwinkleSparkleSound() {
+            if (!soundEnabled) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+
+            const now = ctx.currentTime;
+            // Pentatonic sparkle pitches (C6, D6, E6, G6, A6, C7)
+            const pentatonicPitches = [1046.5, 1174.66, 1318.51, 1567.98, 1760.0, 2093.0];
+            const randomPitch = pentatonicPitches[Math.floor(Math.random() * pentatonicPitches.length)];
+            const overtone = randomPitch * 1.5;
+
+            [randomPitch, overtone].forEach((freq, index) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = index === 0 ? 'sine' : 'triangle';
+                osc.frequency.setValueAtTime(freq, now + index * 0.04);
+
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(index === 0 ? 0.25 : 0.12, now + 0.01 + index * 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7 + index * 0.04);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now + index * 0.04);
+                osc.stop(now + 0.75 + index * 0.04);
+            });
+        }
+
+        function toggleFestiveAudio() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            const text = document.getElementById('soundText');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-amber-400';
+                text.textContent = 'Audio On';
+                playTempleBellSound();
+                showToast('Festive Sound Effects Enabled 🔔');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-amber-400/50';
+                text.textContent = 'Muted';
+                showToast('Audio Muted');
+            }
+        }
+
+        function toggleSingleDiya(el) {
+            el.classList.toggle('diya-unlit');
+            const isLit = !el.classList.contains('diya-unlit');
+            if (isLit) {
+                const rect = el.getBoundingClientRect();
+                createFireworkBurst(rect.left + rect.width / 2, rect.top + 20, 28);
+                // Resonant Temple bell chime on diya illumination
+                playTempleBellSound(1.05);
+            }
+        }
+
+        function lightAllDiyas() {
+            const diyas = document.querySelectorAll('.diya-item');
+            diyas.forEach((d, idx) => {
+                d.classList.remove('diya-unlit');
+                const rect = d.getBoundingClientRect();
+                setTimeout(() => {
+                    createFireworkBurst(rect.left + rect.width / 2, rect.top + 20, 35);
+                    // Tiered melodic bell chimes
+                    playTempleBellSound(0.85 + idx * 0.18);
+                }, idx * 190);
+            });
+            showToast('All Diyas Illuminated! Shubh Deepavali 🪔');
+        }
+
+        /* ==========================================
+         * 4. FIREWORKS & SPARKLES CANVAS ENGINE
+         * ========================================== */
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let ambientSparkles = [];
+
+        const festiveColors = [
+            '#FFD700', // Gold
+            '#FF9900', // Amber
+            '#FF3366', // Festive Pink/Red
+            '#00E5FF', // Cyan Spark
+            '#ADFF2F', // Lime Gold
+            '#FFF59D'  // Warm White-Yellow
+        ];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Ambient floating golden dust particles
+        function initAmbientSparkles() {
+            ambientSparkles = [];
+            const count = Math.min(60, Math.floor(window.innerWidth / 22));
+            for (let i = 0; i < count; i++) {
+                ambientSparkles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 0.5,
+                    speedY: -(Math.random() * 0.4 + 0.15),
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    alpha: Math.random() * 0.7 + 0.2,
+                    pulseSpeed: Math.random() * 0.02 + 0.01
+                });
+            }
+        }
+
+        function createFireworkBurst(x, y, count = 55) {
+            const baseColor = festiveColors[Math.floor(Math.random() * festiveColors.length)];
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.2;
+                const speed = Math.random() * 5.5 + 1.5;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    radius: Math.random() * 2.6 + 1,
+                    color: Math.random() > 0.3 ? baseColor : '#FFD700',
+                    alpha: 1,
+                    decay: Math.random() * 0.016 + 0.012,
+                    gravity: 0.045
+                });
+            }
+        }
+
+        function celebrateGrandFireworks() {
+            const bursts = 6;
+            for (let i = 0; i < bursts; i++) {
+                setTimeout(() => {
+                    const rx = Math.random() * (canvas.width * 0.7) + canvas.width * 0.15;
+                    const ry = Math.random() * (canvas.height * 0.45) + canvas.height * 0.1;
+                    createFireworkBurst(rx, ry, 65);
+                    // Trigger deep resonant firecracker burst
+                    playFirecrackerSound();
+                }, i * 260);
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw ambient floating sparkles
+            for (let s of ambientSparkles) {
+                s.y += s.speedY;
+                s.x += s.speedX;
+                s.alpha += Math.sin(Date.now() * s.pulseSpeed) * 0.008;
+
+                if (s.y < -10) s.y = canvas.height + 10;
+                if (s.x < -10) s.x = canvas.width + 10;
+                if (s.x > canvas.width + 10) s.x = -10;
+
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 215, 0, ${Math.max(0.15, Math.min(0.85, s.alpha))})`;
+                ctx.fill();
+            }
+
+            // Draw firework burst particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += p.gravity;
+                p.vx *= 0.985;
+                p.alpha -= p.decay;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = p.color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Occasional automatic gentle firework in background
+            if (Math.random() < 0.018 && particles.length < 180) {
+                const rx = Math.random() * (canvas.width * 0.8) + canvas.width * 0.1;
+                const ry = Math.random() * (canvas.height * 0.4) + canvas.height * 0.08;
+                createFireworkBurst(rx, ry, 40);
+            }
+
+            requestAnimationFrame(animateCanvas);
+        }
+
+        // Click anywhere on background to spawn a celebratory firework burst and fairy dust sparkle sound
+        window.addEventListener('click', (e) => {
+            const tag = e.target.tagName.toLowerCase();
+            if (!['input', 'textarea', 'button', 'a', 'svg', 'path'].includes(tag)) {
+                createFireworkBurst(e.clientX, e.clientY, 45);
+                playTwinkleSparkleSound();
+            }
+        });
+
+        window.onload = function () {
+            initGreetingFromURL();
+            initAmbientSparkles();
+            animateCanvas();
+            // Launch welcome fireworks
+            setTimeout(() => {
+                createFireworkBurst(window.innerWidth * 0.3, window.innerHeight * 0.25, 50);
+                createFireworkBurst(window.innerWidth * 0.7, window.innerHeight * 0.25, 50);
+            }, 400);
+        };
+    </script>
+</body>
+</html>
